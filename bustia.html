@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infants i Joves - CEM El Turó</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: '#FF6600' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; background-color: #000; }
+        
+        /* Slideshow de Fons */
+        .bg-slideshow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -20; }   
+        .bg-slideshow img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: fadeSlideshow 32s infinite; }
+        .bg-slideshow img:nth-child(1) { animation-delay: 0s; }
+        .bg-slideshow img:nth-child(2) { animation-delay: 4s; }
+        .bg-slideshow img:nth-child(3) { animation-delay: 8s; }
+        .bg-slideshow img:nth-child(4) { animation-delay: 12s; }
+        .bg-slideshow img:nth-child(5) { animation-delay: 16s; }
+        .bg-slideshow img:nth-child(6) { animation-delay: 20s; }
+        .bg-slideshow img:nth-child(7) { animation-delay: 24s; }
+        .bg-slideshow img:nth-child(8) { animation-delay: 28s; }
+
+        @keyframes fadeSlideshow {
+            0% { opacity: 0; transform: scale(1.05); }
+            2% { opacity: 0.4; transform: scale(1.03); }
+            10.5% { opacity: 0.4; transform: scale(1.01); }
+            12.5% { opacity: 0; transform: scale(1); }
+            100% { opacity: 0; }
+        }
+
+        .glass-nav { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .glass-card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 2rem; transition: all 0.3s ease; }
+        .glass-card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.3); }
+
+        /* Dropdowns */
+        .nav-item:hover .dropdown { display: block; }
+        .dropdown { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); padding-top: 15px; }
+
+        details summary::-webkit-details-marker { display: none; }
+        details[open] summary i { transform: rotate(180deg); }
+        summary { cursor: pointer; list-style: none; }
+    </style>
+</head>
+
+<body class="text-white min-h-screen relative selection:bg-brand selection:text-white">
+
+    <div class="bg-slideshow pointer-events-none">
+        <img src="/png/vestibulo.jpeg" alt="1">
+        <img src="/png/sala_fitness.jpeg" alt="2">
+        <img src="/png/piscina.png" alt="3">
+        <img src="/png/ciclismo.png" alt="4">
+        <img src="/png/cursos.png" alt="5">
+        <img src="/png/escoles.png" alt="6">
+        <img src="/png/pistav1.MP.jpg" alt="7">
+        <img src="/png/sala_dirijidas.jpg" alt="8">
+    </div>
+    <div class="fixed inset-0 bg-slate-900/80 z-[-10] pointer-events-none"></div>
+
+    <nav class="fixed top-6 left-0 right-0 mx-auto max-w-[95%] lg:max-w-[1200px] z-50">
+        <div class="glass-nav rounded-full px-6 py-4 flex justify-between items-center shadow-2xl">
+            <a href="index.html" class="bg-brand p-2 rounded-full hover:scale-105 transition-transform">
+                <img src="/png/logo.png" alt="Logo" class="h-auto w-10 object-contain brightness-0 invert">
+            </a>
+            
+            <div class="hidden lg:flex gap-8 font-bold text-[11px] uppercase tracking-widest items-center">
+                <a href="index.html" class="hover:text-brand transition-colors">Inici</a>
+                
+                <div class="relative nav-item">
+                    <button class="hover:text-brand flex items-center gap-2">El Centre <i class="fas fa-chevron-down text-[8px]"></i></button>
+                    <div class="dropdown">
+                        <div class="bg-black/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 w-48 space-y-3 shadow-2xl">
+                            <a href="instalaciones.html" class="block hover:text-brand transition-colors">Instal·lacions</a>
+                            <a href="calendari.html" class="block hover:text-brand transition-colors">Horaris i Festius</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative nav-item">
+                    <button class="hover:text-brand flex items-center gap-2">Quotes <i class="fas fa-chevron-down text-[8px]"></i></button>
+                    <div class="dropdown">
+                        <div class="bg-black/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 w-48 space-y-3 shadow-2xl">
+                            <a href="/html/tarifas.html" class="block hover:text-brand transition-colors">Abonaments</a>
+                            <a href="tarifas.html#infantils" class="block hover:text-brand transition-colors">Quotes Infantils</a>
+                            <a href="app.html" class="block text-brand font-black hover:text-white transition-colors">La Nostra App</a>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="activitats.html" class="hover:text-brand transition-colors">Activitats</a>
+                <a href="/html/contacto.html" class="hidden md:block hover:text-brand font-bold text-fluid-nav transition-colors">Contacte</a>
+                <a href="#" class="text-brand">Infants i Joves</a>
+            </div>
+
+            <a href="/html/tarifas.html" class="bg-white/30 hover:bg-white/40 border border-white/50 text-white font-bold py-[clamp(0.5rem,1vw,0.75rem)] px-[clamp(1.5rem,2.5vw,2.5rem)] rounded-full transition-all shadow-lg backdrop-blur-md text-fluid-nav">TARIFES</a>
+        </div>
+    </nav>
+
+    <div class="max-w-[1200px] mx-auto pt-40 pb-20 px-6 relative z-10">
+        
+        <header class="mb-12">
+            <span class="bg-brand/20 text-brand px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-brand/30">Activitats per a créixer</span>
+            <h1 class="text-6xl font-black mt-6 leading-none">Infants i <span class="text-brand">Joves</span></h1>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="glass-card p-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center"><i class="fas fa-swimmer text-xl"></i></div>
+                    <h2 class="text-2xl font-black">Cursos de Natació</h2>
+                </div>
+                <p class="text-white/60 mb-6 text-sm">Aprenentatge i perfeccionament en el medi aquàtic per a totes les edats.</p>
+                <details class="bg-black/40 rounded-2xl overflow-hidden border border-white/5">
+                    <summary class="p-4 text-[10px] font-black uppercase tracking-widest flex justify-between items-center text-blue-400">Detalls del programa <i class="fas fa-plus"></i></summary>
+                    <div class="p-5 border-t border-white/5 text-sm space-y-3 opacity-80">
+                        <p><strong>Nadons (6-36 mesos):</strong> Familiarització amb la mare/pare.</p>
+                        <p><strong>Escolar (3-14 anys):</strong> Nivells segons habilitat (blanc, groc, taronja, verd, blau).</p>
+                        <p><strong>Tecnificació:</strong> Per a joves que busquen entrenament esportiu.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="glass-card p-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center"><i class="fas fa-running text-xl"></i></div>
+                    <h2 class="text-2xl font-black">Iniciació Esportiva</h2>
+                </div>
+                <p class="text-white/60 mb-6 text-sm">Treball de psicomotricitat i jocs multiesportius per als més petits.</p>
+                <details class="bg-black/40 rounded-2xl overflow-hidden border border-white/5">
+                    <summary class="p-4 text-[10px] font-black uppercase tracking-widest flex justify-between items-center text-orange-400">Detalls del programa <i class="fas fa-plus"></i></summary>
+                    <div class="p-5 border-t border-white/5 text-sm space-y-3 opacity-80">
+                        <p>Enfocat a nens i nenes de P3, P4 i P5.</p>
+                        <p>Objectiu: Desenvolupar les capacitats coordinatives bàsiques a través del joc i la diversió.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="glass-card p-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center text-black"><i class="fas fa-sun text-xl"></i></div>
+                    <h2 class="text-2xl font-black text-yellow-500">Campus d'Estiu</h2>
+                </div>
+                <p class="text-white/60 mb-6 text-sm">L'opció ideal per a les vacances: esport, tallers i molta piscina.</p>
+                <details class="bg-black/40 rounded-2xl overflow-hidden border border-white/5">
+                    <summary class="p-4 text-[10px] font-black uppercase tracking-widest flex justify-between items-center text-yellow-500">Dates i Activitats <i class="fas fa-plus"></i></summary>
+                    <div class="p-5 border-t border-white/5 text-sm space-y-3 opacity-80">
+                        <p>Disponible durant els mesos de juny, juliol i setembre.</p>
+                        <p>Inclou: Natació diària, jocs col·lectius, excursions i gimcanes.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="glass-card p-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center"><i class="fas fa-volleyball-ball text-xl"></i></div>
+                    <h2 class="text-2xl font-black">Tecnificació Voleibol</h2>
+                </div>
+                <p class="text-white/60 mb-6 text-sm">Millora el teu nivell de joc amb els nostres campus especialitzats.</p>
+                <details class="bg-black/40 rounded-2xl overflow-hidden border border-white/5">
+                    <summary class="p-4 text-[10px] font-black uppercase tracking-widest flex justify-between items-center text-indigo-400">Més informació <i class="fas fa-plus"></i></summary>
+                    <div class="p-5 border-t border-white/5 text-sm space-y-3 opacity-80">
+                        <p>Per a joves que ja tenen una base i volen polir la tècnica de servei, recepció i tàctica en pista.</p>
+                    </div>
+                </details>
+            </div>
+
+        </main>
+
+        <footer class="mt-20 pt-10 border-t border-white/10 text-center opacity-40 text-[10px] uppercase tracking-[4px]">
+            CEM El Turó - Compromís Esportiu 2026
+        </footer>
+    </div>
+
+</body>
+</html>
