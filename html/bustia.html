@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bústia Ètica - CEM El Turó</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: '#FF6600' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontSize: {
+                        'fluid-nav': 'clamp(1.375rem, 1.8vw, 1.875rem)',         
+                        'fluid-hero': 'clamp(4.375rem, 7.5vw, 8.75rem)',     
+                        'fluid-h3': 'clamp(2.18rem, 3.75vw, 3.75rem)',             
+                        'fluid-p': 'clamp(1.375rem, 1.8vw, 1.875rem)',           
+                        'fluid-badge': 'clamp(1.25rem, 1.5vw, 1.5rem)',        
+                        'fluid-icon': 'clamp(2.5rem, 5vw, 5rem)',              
+                        'fluid-btn': 'clamp(1.375rem, 1.8vw, 1.875rem)'      
+                    },
+                    spacing: {
+                        'fluid-p': 'clamp(1.875rem, 3.75vw, 3.75rem)',               
+                        'fluid-icon-box': 'clamp(5.625rem, 8.75vw, 8.125rem)',          
+                        'fluid-nav-logo': 'clamp(2.5rem, 3.75vw, 3.75rem)'           
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; }
+        
+        /* ==========================================
+           CAPA 1: Animació del Fons (Slideshow)
+        ========================================== */
+        .bg-slideshow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -20; background-color: #ff5e18; }   
+        .bg-slideshow img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: fadeSlideshow 32s infinite; }
+        .bg-slideshow img:nth-child(1) { animation-delay: 0s; }
+        .bg-slideshow img:nth-child(2) { animation-delay: 4s; }
+        .bg-slideshow img:nth-child(3) { animation-delay: 8s; }
+        .bg-slideshow img:nth-child(4) { animation-delay: 12s; }
+        .bg-slideshow img:nth-child(5) { animation-delay: 16s; }
+        .bg-slideshow img:nth-child(6) { animation-delay: 20s; }
+        .bg-slideshow img:nth-child(7) { animation-delay: 24s; }
+        .bg-slideshow img:nth-child(8) { animation-delay: 28s; }
+
+        @keyframes fadeSlideshow {
+            0% { opacity: 0; transform: scale(1.05); }
+            2% { opacity: 1; transform: scale(1.03); }
+            10.5% { opacity: 1; transform: scale(1.01); }
+            12.5% { opacity: 0; transform: scale(1); }
+            100% { opacity: 0; }
+        }
+
+        /* ========================================================
+           CHATBOT: Textos un 25% más grandes dentro del tamaño estándar
+           ======================================================== */
+        .chatbot-button {
+            position: fixed; bottom: 30px; right: 30px; 
+            width: clamp(60px, 6vw, 70px); height: clamp(60px, 6vw, 70px); 
+            border-radius: 50%; background: linear-gradient(135deg, #FF6600, #FF8C00);
+            color: white; border: 2px solid rgba(255,255,255,0.3); cursor: pointer; box-shadow: 0 10px 30px rgba(255, 102, 0, 0.5);
+            display: flex; align-items: center; justify-content: center; 
+            font-size: clamp(30px, 3.1vw, 37px); 
+            transition: all 0.3s ease; z-index: 1000;
+        }
+        .chatbot-button:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 15px 35px rgba(255, 102, 0, 0.6); }
+        .chatbot-button.active { background: #e74c3c; transform: rotate(90deg); border-color: rgba(255,255,255,0.1); }
+        
+        .chatbot-window {
+            position: fixed; bottom: 120px; right: 30px; 
+            width: clamp(360px, 35vw, 450px); height: clamp(500px, 55vh, 700px); 
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 2rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4); display: none; flex-direction: column; overflow: hidden; z-index: 1000;
+        }
+        .chatbot-window.active { display: flex; }
+        
+        .chatbot-header { background: rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .chatbot-header h3 { margin: 0; font-size: clamp(20px, 1.8vw, 25px); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); } 
+        .chatbot-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .chatbot-header button:hover { background: rgba(255,255,255,0.4); transform: scale(1.1); }
+        
+        /* Contenedor con SCROLL */
+        .chatbot-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 18px; background: transparent; scroll-behavior: smooth; }
+        
+        /* TEXTO DEL CHAT EN NEGRO */
+        .message { max-width: 85%; padding: 18px 25px; border-radius: 25px; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; color: #000; word-wrap: break-word; font-weight: 600; } 
+        .user-message { background: #FF6600; align-self: flex-end; border-bottom-right-radius: 8px; box-shadow: 0 4px 15px rgba(255,102,0,0.4); color: white; } 
+        .bot-message { background: rgba(255, 255, 255, 0.5); align-self: flex-start; border-bottom-left-radius: 8px; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px); }
+        
+        .chatbot-input-area { padding: 25px; background: rgba(0,0,0,0.1); border-top: 1px solid rgba(255,255,255,0.2); display: flex; gap: 15px; }
+        .chatbot-input { flex: 1; padding: 18px 30px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.95); border-radius: 35px; outline: none; color: #000; font-weight: 500; font-size: clamp(17px, 1.5vw, 20px); } 
+        .chatbot-input:focus { background: white; box-shadow: 0 0 0 4px rgba(255,102,0,0.5); border-color: transparent; }
+        .chatbot-send { width: 60px; height: 60px; border-radius: 50%; background: #FF6600; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 25px; transition: all 0.3s; flex-shrink: 0; }
+        
+        .typing-indicator { display: none; padding: 18px 25px; background: rgba(255, 255, 255, 0.5); border-radius: 25px; align-self: flex-start; border-bottom-left-radius: 8px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
+        .typing-indicator span { display: inline-block; width: 10px; height: 10px; background: #000; border-radius: 50%; margin: 0 4px; animation: typing 1.4s infinite; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .bento-block { display: flex; flex-direction: column; height: 100%; }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-15px) scale(0.95); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        .animate-fade-in-left { animation: fadeInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @media (max-width: 768px) { body { overflow-y: auto; } }
+    </style>
+</head>
+
+<body class="text-white selection:bg-brand selection:text-white bg-black">
+
+    <div class="bg-slideshow pointer-events-none">
+        <img src="/png/vestibulo.jpeg" alt="Vestíbul">
+        <img src="/png/sala_fitness.jpeg" alt="Sala Fitness">
+        <img src="/png/piscina.png" alt="Piscina">
+        <img src="/png/ciclismo.png" alt="Ciclisme">
+        <img src="/png/cursos.png" alt="Cursos">
+        <img src="/png/escoles.png" alt="Escoles">
+        <img src="/png/pistav1.MP.jpg" alt="Pista V1">
+        <img src="/png/sala_dirijidas.jpg" alt="Sala Dirigides">
+    </div>
+    <div class="fixed inset-0 bg-slate-900/85 z-[-10] pointer-events-none"></div>
+
+    <nav class="fixed top-6 left-0 right-0 mx-4 lg:mx-auto max-w-[95%] xl:max-w-[1400px] w-full z-50 self-center">
+        <div class="bg-white/20 backdrop-blur-2xl border border-white/40 rounded-full px-[clamp(1.5rem,3vw,3rem)] py-[clamp(0.75rem,1.5vw,1.5rem)] flex justify-between items-center shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
+            <a href="/index.html" class="flex items-center shrink-0 bg-brand p-[clamp(0.5rem,1vw,1rem)] rounded-full hover:scale-105 transition-transform shadow-lg border border-white/20 mr-4">
+                <img src="/png/logo.png" alt="Logo CEM" class="h-auto w-10 object-contain brightness-0 invert" onerror="this.src='/png/cem_el_turo_taronja.webp'">
+            </a>
+            
+            <div class="hidden lg:flex gap-[clamp(1.5rem,2.5vw,3rem)] text-fluid-nav font-bold text-white drop-shadow-md items-center">
+                <a href="/index.html" class="hover:text-brand transition-colors">Inici</a>
+                
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">El Centre ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2 relative">
+                            <a href="/html/instalaciones.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Instal·lacions</a>
+                            
+                            <div class="relative group/schedule">
+                                <a href="/html/calendari.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors w-full flex justify-between items-center">
+                                    Horaris i Festius <i class="fas fa-eye text-[10px] text-white/40 group-hover/schedule:text-brand transition-colors"></i>
+                                </a>
+                                
+                                <div class="absolute left-full top-0 ml-4 hidden group-hover/schedule:block w-[clamp(300px,25vw,400px)] z-50 animate-fade-in-left">
+                                    <div class="bg-gradient-to-br from-black/95 to-zinc-900/95 backdrop-blur-3xl border border-brand/50 rounded-2xl p-6 shadow-[0_15px_40px_rgba(255,102,0,0.3)] relative overflow-hidden">
+                                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand/20 blur-2xl rounded-full"></div>
+                                        
+                                        <h4 class="text-brand font-black text-sm mb-4 flex items-center gap-3 border-b border-white/10 pb-3 relative z-10">
+                                            <i class="far fa-clock text-lg"></i> Resum Horari 2026
+                                        </h4>
+                                        <ul class="text-white/80 text-sm space-y-4 font-medium relative z-10">
+                                            <li class="flex justify-between items-center"><strong class="text-white bg-white/10 px-3 py-1.5 rounded-lg">Dl - Dv</strong> <span>7:00 a 22:00h</span></li>
+                                            <li class="flex justify-between items-center"><strong class="text-white bg-white/10 px-3 py-1.5 rounded-lg">Dissabte</strong> <span class="text-right">9h a 14h<br>16h a 20h</span></li>
+                                            <li class="flex justify-between items-center"><strong class="text-white bg-white/10 px-3 py-1.5 rounded-lg">Diumenge</strong> <span>9:00 a 14:00h</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/html/ocupacio.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Ocupació d'Espais</a>
+                            <a href="/html/aforo.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Normativa i Aforament</a>
+                            <a href="/html/humo.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Entorn Sense Fum</a>
+                            <a href="/html/reciclaje.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Reciclatge</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">Quotes ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/altaOnline.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">ALTA ONLINE</a>
+                            <a href="/html/tarifas.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Abonaments Generals</a>
+                            <a href="/html/piscina.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Piscina d'Estiu</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">Serveis ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,320px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/serveis.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Serveis del Centre</a>
+                            <a href="/html/activitats.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Activitats Dirigides</a>
+                            <a href="/html/entrenador.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Entrenador Personal</a>
+                            <a href="/html/mujerDeporte.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Dona i Esport</a>
+                            <a href="/html/espacionatural.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Spainatural</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">App ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/app.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Descàrrega App</a>
+                            <a href="/html/reserva.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Reserves</a>
+                            <a href="/html/protocolReserva.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Normativa Reserves</a>
+                            <a href="/html/appBici.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">App Cycling</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">Infants ▾</button>
+                    <div class="absolute hidden group-hover:block top-full right-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/cursos.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Cursos de Natació</a>
+                            <a href="/html/infantes.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Escoles i Campus</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="/html/contacto.html" class="hidden md:block hover:text-brand font-bold text-fluid-nav transition-colors">Contacte</a>
+                <a href="/html/tarifas.html" class="bg-white/30 hover:bg-white/40 border border-white/50 text-white text-fluid-nav font-bold py-[clamp(0.5rem,1vw,0.75rem)] px-[clamp(1.5rem,2.5vw,2.5rem)] rounded-full transition-all shadow-lg backdrop-blur-md">Tarifes</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center px-[clamp(1rem,4vw,6rem)] pt-[clamp(10rem,15vh,14rem)] pb-16 max-w-[1400px] mx-auto w-full relative z-10">
+        
+        <div class="bg-gradient-to-br from-cyan-900/50 to-blue-900/40 backdrop-blur-2xl border border-cyan-500/30 rounded-[clamp(1.5rem,3vw,3rem)] p-fluid-p shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full mb-[clamp(1.5rem,3vw,3rem)] relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 group">
+            <div class="absolute -top-32 -right-32 w-64 h-64 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none transition-transform group-hover:scale-150 duration-700"></div>
+            
+            <div class="text-left w-full relative z-10">
+                <h1 class="text-fluid-hero font-black uppercase tracking-widest text-white drop-shadow-lg tracking-tight leading-[0.9]">
+                    Bústia <span class="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">Ètica</span>
+                </h1>
+                <p class="text-white/80 text-fluid-p font-medium mt-[clamp(0.5rem,1vh,1rem)] max-w-3xl">Canal ètic i de denúncies intern del CEM El Turó.</p>
+            </div>
+            
+            <a href="/index.html" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 px-[clamp(1.5rem,3vw,2.5rem)] py-[clamp(0.75rem,1.5vw,1.25rem)] rounded-full text-white transition-all font-bold shadow-lg w-full md:w-auto flex-shrink-0 whitespace-nowrap text-fluid-btn z-10">
+                <i class="fas fa-arrow-left"></i> Tornar a l'inici
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-[clamp(1rem,2vw,2.5rem)] w-full items-stretch flex-grow">
+            
+            <div class="bento-block lg:col-span-2 bg-white/10 backdrop-blur-xl border border-white/20 p-fluid-p rounded-[clamp(1.5rem,3vw,3rem)] shadow-xl hover:border-cyan-400/30 transition-colors relative overflow-hidden group">
+                <div class="absolute left-0 top-0 bottom-0 w-2 bg-cyan-400"></div>
+                <h2 class="text-fluid-h3 font-black text-cyan-400 mb-6 flex items-center gap-3 drop-shadow-md relative z-10">
+                    <i class="fas fa-info-circle"></i> Què és la Bústia Ètica?
+                </h2>
+                <div class="text-white/80 font-medium space-y-6 text-fluid-p leading-relaxed flex-grow relative z-10">
+                    <p>La Bústia Ètica és el canal intern d'informació de <strong>GMSP, S.L.</strong> (gestora del CEM El Turó), habilitat per rebre comunicacions relacionades amb possibles infraccions legals, incompliments normatius o conductes irregulars detectades en l'àmbit professional o laboral de l'organització.</p>
+                    <p>Aquest canal compleix estrictament amb les exigències de la <strong class="text-white">Llei 2/2023</strong> (protecció de les persones que informin sobre infraccions normatives i de lluita contra la corrupció) i de la Directiva (UE) 2019/1937.</p>
+                </div>
+            </div>
+
+            <div class="bento-block lg:col-span-1 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 p-fluid-p rounded-[clamp(1.5rem,3vw,3rem)] shadow-xl hover:border-cyan-400/30 transition-colors">
+                <h2 class="text-fluid-h3 font-black text-white mb-6 flex items-center gap-3 drop-shadow-md">
+                    <i class="fas fa-shield-alt text-brand"></i> Protecció
+                </h2>
+                <div class="text-white/80 font-medium space-y-6 text-fluid-p leading-relaxed flex-grow">
+                    <div class="bg-black/30 p-6 rounded-2xl border border-white/10">
+                        <p class="font-bold text-cyan-400 mb-2"><i class="fas fa-user-secret"></i> Anonimat</p>
+                        <p>Les comunicacions es poden realitzar de forma totalment anònima si així ho desitja l'informant.</p>
+                    </div>
+                    <div class="bg-black/30 p-6 rounded-2xl border border-white/10">
+                        <p class="font-bold text-cyan-400 mb-2"><i class="fas fa-lock"></i> Confidencialitat</p>
+                        <p>Garantim el secret de la identitat del denunciant i de qualsevol tercera persona esmentada en l'informe.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bento-block lg:col-span-1 bg-white/10 backdrop-blur-xl border border-white/20 p-fluid-p rounded-[clamp(1.5rem,3vw,3rem)] shadow-xl hover:border-cyan-400/30 transition-colors">
+                <h2 class="text-fluid-h3 font-black text-white mb-6 flex items-center gap-3 drop-shadow-md">
+                    <i class="fas fa-list-ul text-brand"></i> Àmbit
+                </h2>
+                <div class="text-white/80 font-medium space-y-4 text-fluid-p leading-relaxed flex-grow">
+                    <p>A través d'aquest canal es poden comunicar, entre d'altres:</p>
+                    <ul class="list-disc pl-5 space-y-3 mt-4">
+                        <li>Fets que puguin ser constitutius d'infracció penal o administrativa greu.</li>
+                        <li>Possibles casos de frau o corrupció.</li>
+                        <li>Incompliments del Codi Ètic o normatives internes.</li>
+                        <li>Infraccions del dret de la UE o vulneracions greus de seguretat.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bento-block lg:col-span-2 bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-xl border border-cyan-400/50 p-fluid-p rounded-[clamp(1.5rem,3vw,3rem)] shadow-2xl relative overflow-hidden flex flex-col justify-center items-center text-center group">
+                <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                <i class="fas fa-paper-plane text-fluid-icon text-cyan-400 mb-6 drop-shadow-md transform group-hover:scale-110 transition-transform"></i>
+                <h2 class="text-fluid-h3 font-black text-white mb-4 drop-shadow-md">Accedir a la Plataforma</h2>
+                <p class="text-white/80 font-medium text-fluid-p mb-10 max-w-xl">
+                    La plataforma de la Bústia Ètica està gestionada per un sistema extern i independent per garantir la total traçabilitat, seguretat i imparcialitat.
+                </p>
+                <a href="#" class="inline-flex items-center gap-3 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black py-4 px-10 rounded-full shadow-[0_10px_30px_rgba(6,182,212,0.4)] transition-transform hover:scale-105 text-fluid-btn uppercase tracking-wider relative z-10">
+                    Nova Comunicació <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="mt-auto border-t border-white/20 pt-12 pb-8 text-sm relative z-10 w-full bg-black/40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-8">
+            
+            <div class="flex flex-col gap-3">
+                <h4 class="text-brand font-black uppercase tracking-widest text-base mb-2 drop-shadow-sm">Situació i Contacte</h4>
+                <p class="text-white/90 font-medium text-base">CEM EL TURÓ</p>
+                <p class="text-white/70">c/ Joaquim Blume, nº2<br>08120, La Llagosta</p>
+                <div class="mt-2">
+                    <a href="tel:935451550" class="text-white hover:text-brand font-bold block mb-1 transition-colors">📞 93 545 15 50</a>
+                    <a href="mailto:info@cemelturo.com" class="text-white/80 hover:text-brand font-medium transition-colors">✉️ info@cemelturo.com</a>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <h4 class="text-white font-black uppercase tracking-widest text-base mb-2 drop-shadow-sm">Horari 2026</h4>
+                <p class="text-white/80"><span class="font-bold text-white">Dl - Dv:</span> de 7 a 22 h.</p>
+                <p class="text-white/80"><span class="font-bold text-white">Ds:</span> de 9 a 14 h. i de 16 a 20 h.*</p>
+                <p class="text-white/80"><span class="font-bold text-white">Dg:</span> de 9 a 14 h.</p>
+                <p class="text-[10px] text-white/50 leading-tight mt-1 border-t border-white/10 pt-2">
+                    *Dissabtes de 16 a 20h només Sala Fitness, AADD i Cycling Virtuals. Dissabtes i Diumenges Zona d'aigües de 09 a 13h.
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <h4 class="text-white font-black uppercase tracking-widest text-base mb-2 drop-shadow-sm">Horaris d'Estiu</h4>
+                <p class="text-white/80"><span class="font-bold text-white">Piscina Estiu:</span><br>Dl a Dg d'11 a 20.30 h.*</p>
+                <p class="text-[10px] text-white/50 leading-tight border-b border-white/10 pb-2">
+                    *Del 14 de juny al 31 d'agost.
+                </p>
+                <p class="text-white/80 mt-1"><span class="font-bold text-white">Horari Agost:</span><br>Dl - Dv: 8 a 22h | Ds: 9 a 20.30h | Dg: 10 a 14h.</p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <h4 class="text-white font-black uppercase tracking-widest text-base mb-3 drop-shadow-sm">Informació</h4>
+                <a href="/html/avisosLegales.html" class="text-white/70 hover:text-white transition">Avís Legal</a>
+                <a href="/html/privacidadWeb.html" class="text-white/70 hover:text-white transition">Política de Privacitat Web</a>
+                <a href="/html/cookies.html" class="text-white/70 hover:text-white transition">Política de Cookies</a>
+                <a href="/html/devolucion.html" class="text-white/70 hover:text-white transition">Política de Devolució - Cancel·lació</a>
+                <a href="/html/protocol.html" class="text-white/70 hover:text-white transition">Protocol Protecció Infants</a>
+                <a href="/html/bustia.html" class="text-cyan-400 font-bold transition">Bústia Ètica</a>
+            </div> 
+
+        </div>
+        
+        <div class="flex flex-col md:flex-row justify-between items-center border-t border-white/10 pt-6 px-6 max-w-7xl mx-auto text-xs text-white/40">
+            <p>© GMSP, S.L. - Complex Esportiu Municipal El Turó</p>
+            <div class="flex gap-4 mt-4 md:mt-0 text-lg">
+                <a href="https://www.facebook.com/cemelturo/" class="hover:text-brand transition"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/cem_el_turo" class="hover:text-brand transition"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="chatbot-button" id="chatbotButton">
+        <i class="fas fa-comment"></i>
+    </div>
+
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <h3><i class="fas fa-robot" style="margin-right: 15px;"></i> Assistent El Turó</h3>
+            <button id="closeChatbot"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chatbot-messages no-scrollbar" id="chatbotMessages">
+            <div class="message bot-message">
+                👋 Hola! Tens dubtes sobre com funciona la Bústia Ètica o sobre el nostre compromís amb la transparència? Pregunta'm!
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span><span></span><span></span>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Escriu el teu missatge..." onkeypress="handleChatKeyPress(event)">
+            <button class="chatbot-send" id="chatbotSend" onclick="sendChatMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const chatbotButton = document.getElementById('chatbotButton');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const closeChatbot = document.getElementById('closeChatbot');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        chatbotButton.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('active');
+            chatbotButton.classList.toggle('active');
+            if (chatbotWindow.classList.contains('active')) {
+                chatbotInput.focus();
+            }
+        });
+
+        closeChatbot.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+            chatbotButton.classList.remove('active');
+        });
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') { sendChatMessage(); }
+        }
+
+        function addChatMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'flex';
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function hideTyping() { typingIndicator.style.display = 'none'; }
+
+        async function sendChatMessage() {
+            const message = chatbotInput.value.trim();
+            if (!message) return;
+
+            chatbotInput.disabled = true; 
+            chatbotSend.disabled = true;
+            addChatMessage(message, true);
+            chatbotInput.value = '';
+            showTyping();
+
+            try {
+                const response = await fetch('http://localhost:5000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) { 
+                    addChatMessage(data.response); 
+                } else { 
+                    addChatMessage('Error: No s\'ha pogut obtenir resposta.'); 
+                }
+            } catch (error) {
+                addChatMessage('Error de connexió al servidor.');
+            } finally {
+                chatbotInput.disabled = false; 
+                chatbotSend.disabled = false;
+                hideTyping(); 
+                chatbotInput.focus();
+            }
+        }
+    </script>
+</body>
+</html>
