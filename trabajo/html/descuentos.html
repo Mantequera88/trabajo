@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piscina d'Estiu - CEM El Turó</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: '#FF6600' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontSize: {
+                        'fluid-nav': 'clamp(1.24rem, 1.6vw, 1.68rem)',         
+                        'fluid-hero': 'clamp(3.93rem, 6.75vw, 7.87rem)',     
+                        'fluid-h3': 'clamp(1.96rem, 3.37vw, 3.37rem)',             
+                        'fluid-p': 'clamp(1.24rem, 1.6vw, 1.68rem)',           
+                        'fluid-badge': 'clamp(1.12rem, 1.35vw, 1.35rem)',        
+                        'fluid-icon': 'clamp(2.25rem, 4.5vw, 4.5rem)',              
+                        'fluid-btn': 'clamp(1.24rem, 1.6vw, 1.68rem)'      
+                    },
+                    spacing: {
+                        'fluid-p': 'clamp(1.6rem, 3.3vw, 3.3rem)',               
+                        'fluid-icon-box': 'clamp(5rem, 7.8vw, 7.3rem)',
+                        'fluid-nav-logo': 'clamp(2.1rem, 3.1vw, 3.1rem)'           
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; }
+        
+        /* ==========================================
+           CAPA 1: Animació del Fons (Slideshow)
+        ========================================== */
+        .bg-slideshow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -20; background-color: #ff5e18; }   
+        .bg-slideshow img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: fadeSlideshow 32s infinite; }
+        .bg-slideshow img:nth-child(1) { animation-delay: 0s; }
+        .bg-slideshow img:nth-child(2) { animation-delay: 4s; }
+        .bg-slideshow img:nth-child(3) { animation-delay: 8s; }
+        .bg-slideshow img:nth-child(4) { animation-delay: 12s; }
+        .bg-slideshow img:nth-child(5) { animation-delay: 16s; }
+        .bg-slideshow img:nth-child(6) { animation-delay: 20s; }
+        .bg-slideshow img:nth-child(7) { animation-delay: 24s; }
+        .bg-slideshow img:nth-child(8) { animation-delay: 28s; }
+
+        @keyframes fadeSlideshow {
+            0% { opacity: 0; transform: scale(1.05); }
+            2% { opacity: 1; transform: scale(1.03); }
+            10.5% { opacity: 1; transform: scale(1.01); }
+            12.5% { opacity: 0; transform: scale(1); }
+            100% { opacity: 0; }
+        }
+
+        /* ========================================================
+           CHATBOT: Textos grans INTACTES i color NEGRE
+           ======================================================== */
+        .chatbot-button {
+            position: fixed; bottom: 30px; right: 30px; 
+            width: clamp(60px, 6vw, 70px); height: clamp(60px, 6vw, 70px); 
+            border-radius: 50%; background: linear-gradient(135deg, #FF6600, #FF8C00);
+            color: white; border: 2px solid rgba(255,255,255,0.3); cursor: pointer; box-shadow: 0 10px 30px rgba(255, 102, 0, 0.5);
+            display: flex; align-items: center; justify-content: center; 
+            font-size: clamp(30px, 3.1vw, 37px); 
+            transition: all 0.3s ease; z-index: 1000;
+        }
+        .chatbot-button:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 15px 35px rgba(255, 102, 0, 0.6); }
+        .chatbot-button.active { background: #e74c3c; transform: rotate(90deg); border-color: rgba(255,255,255,0.1); }
+        
+        .chatbot-window {
+            position: fixed; bottom: 120px; right: 30px; 
+            width: clamp(360px, 35vw, 450px); height: clamp(500px, 55vh, 700px); 
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 2rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4); display: none; flex-direction: column; overflow: hidden; z-index: 1000;
+        }
+        .chatbot-window.active { display: flex; }
+        
+        .chatbot-header { background: rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .chatbot-header h3 { margin: 0; font-size: clamp(20px, 1.8vw, 25px); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); } 
+        .chatbot-header button { background: rgba(255,255,255,0.2); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .chatbot-header button:hover { background: rgba(255,255,255,0.4); transform: scale(1.1); }
+        
+        .chatbot-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 18px; background: transparent; scroll-behavior: smooth; }
+        
+        /* TEXTO DEL CHAT EN NEGRO */
+        .message { max-width: 85%; padding: 18px 25px; border-radius: 25px; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; color: #000; word-wrap: break-word; font-weight: 600; } 
+        .user-message { background: #FF6600; align-self: flex-end; border-bottom-right-radius: 8px; box-shadow: 0 4px 15px rgba(255,102,0,0.4); color: white; } 
+        .bot-message { background: rgba(255, 255, 255, 0.5); align-self: flex-start; border-bottom-left-radius: 8px; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px); }
+        
+        .chatbot-input-area { padding: 25px; background: rgba(0,0,0,0.1); border-top: 1px solid rgba(255,255,255,0.2); display: flex; gap: 15px; }
+        .chatbot-input { flex: 1; padding: 18px 30px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.95); border-radius: 35px; outline: none; color: #000; font-weight: 500; font-size: clamp(17px, 1.5vw, 20px); } 
+        .chatbot-input:focus { background: white; box-shadow: 0 0 0 4px rgba(255,102,0,0.5); border-color: transparent; }
+        .chatbot-send { width: 60px; height: 60px; border-radius: 50%; background: #FF6600; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 25px; transition: all 0.3s; flex-shrink: 0; }
+        
+        .typing-indicator { display: none; padding: 18px 25px; background: rgba(255, 255, 255, 0.5); border-radius: 25px; align-self: flex-start; border-bottom-left-radius: 8px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
+        .typing-indicator span { display: inline-block; width: 10px; height: 10px; background: #000; border-radius: 50%; margin: 0 4px; animation: typing 1.4s infinite; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .bento-block { display: flex; flex-direction: column; height: 100%; }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-15px) scale(0.95); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        .animate-fade-in-left { animation: fadeInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @media (max-width: 768px) { body { overflow-y: auto; } }
+    </style>
+</head>
+
+<body class="text-white min-h-screen relative overflow-x-hidden selection:bg-brand selection:text-white flex flex-col bg-black">
+
+    <div class="bg-slideshow pointer-events-none">
+        <img src="/png/vestibulo.jpeg" alt="Vestíbul">
+        <img src="/png/sala_fitness.jpeg" alt="Sala Fitness">
+        <img src="/png/piscina.png" alt="Piscina">
+        <img src="/png/ciclismo.png" alt="Ciclisme">
+        <img src="/png/cursos.png" alt="Cursos">
+        <img src="/png/escoles.png" alt="Escoles">
+        <img src="/png/pistav1.MP.jpg" alt="Pista V1">
+        <img src="/png/sala_dirijidas.jpg" alt="Sala Dirigides">
+    </div>
+    <div class="fixed inset-0 bg-slate-900/85 z-[-10] pointer-events-none"></div>
+
+    <nav class="fixed top-6 left-0 right-0 mx-4 lg:mx-auto max-w-[95%] xl:max-w-[1300px] w-full z-50 self-center">
+        <div class="bg-white/20 backdrop-blur-2xl border border-white/40 rounded-full px-[clamp(1.25rem,2.5vw,2.5rem)] py-[clamp(0.6rem,1.25vw,1.25rem)] flex justify-between items-center shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
+            <a href="/index.html" class="flex items-center shrink-0 bg-brand p-[clamp(0.4rem,0.8vw,0.8rem)] rounded-full hover:scale-105 transition-transform shadow-lg border border-white/20 mr-4">
+                <img src="/png/logo.png" alt="Logo CEM" class="h-auto w-10 object-contain brightness-0 invert" onerror="this.src='/png/cem_el_turo_taronja.webp'">
+            </a>
+            
+            <div class="hidden lg:flex gap-[clamp(1.2rem,2vw,2.5rem)] text-fluid-nav font-bold text-white drop-shadow-md items-center">
+                <a href="/index.html" class="hover:text-brand transition-colors">Inici</a>
+                
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">El Centre ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2 relative">
+                            <a href="/html/instalaciones.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Instal·lacions</a>
+                            <a href="/html/calendari.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Horaris i Festius</a>
+                            <a href="/html/ocupacio.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Ocupació d'Espais</a>
+                            <a href="/html/normativaInstalacion.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Normativa i Aforament</a>
+                            <a href="/html/humo.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Entorn Sense Fum</a>
+                            <a href="/html/reciclaje.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Reciclatge</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="text-brand font-bold transition-colors py-2 focus:outline-none">Quotes ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/altaOnline.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">ALTA ONLINE</a>
+                            <a href="/html/tarifas.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Abonaments Generals</a>
+                            <a href="/html/piscinaverano.html" class="px-6 py-3 text-brand font-black hover:bg-white/10 transition-colors">Piscina d'Estiu</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">Serveis ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,320px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/serveis.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Serveis del Centre</a>
+                            <a href="/html/activitats.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Activitats Dirigides</a>
+                            <a href="/html/entrenador.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Entrenador Personal</a>
+                            <a href="/html/mujerDeporte.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Dona i Esport</a>
+                            <a href="/html/espacionatural.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Spainatural</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">App ▾</button>
+                    <div class="absolute hidden group-hover:block top-full left-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/app.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Descàrrega App</a>
+                            <a href="/html/reserva.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Reserves</a>
+                            <a href="/html/protocolReserva.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Normativa Reserves</a>
+                            <a href="/html/appBici.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">App Cycling</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button class="hover:text-brand transition-colors py-2 focus:outline-none">Infants ▾</button>
+                    <div class="absolute hidden group-hover:block top-full right-0 pt-6 w-[clamp(250px,20vw,300px)]">
+                        <div class="bg-black/80 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] py-4 shadow-2xl flex flex-col gap-2">
+                            <a href="/html/cursos.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Cursos de Natació</a>
+                            <a href="/html/actividadesNinosInfantes.html" class="px-6 py-3 hover:bg-white/10 hover:text-brand transition-colors">Escoles i Campus</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="/html/contacto.html" class="hidden md:block hover:text-brand font-bold text-fluid-nav transition-colors">Contacte</a>
+                <a href="/html/tarifas.html" class="bg-white/30 hover:bg-white/40 border border-white/50 text-white text-fluid-nav font-bold py-[clamp(0.5rem,1vw,0.75rem)] px-[clamp(1.5rem,2.5vw,2.5rem)] rounded-full transition-all shadow-lg backdrop-blur-md">Tarifes</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center px-[clamp(1rem,4vw,6rem)] pt-[clamp(10rem,15vh,14rem)] pb-16 max-w-[1400px] mx-auto w-full relative z-10 h-full">
+        
+        <div class="bg-gradient-to-br from-cyan-900/50 to-blue-900/40 backdrop-blur-2xl border border-cyan-500/30 rounded-[clamp(1.5rem,3vw,3rem)] p-fluid-p shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full mb-[clamp(1.5rem,3vw,3rem)] relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 group">
+            <div class="absolute -top-32 -left-32 w-64 h-64 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none transition-transform group-hover:scale-150 duration-700"></div>
+            
+            <div class="text-left w-full relative z-10">
+                <h1 class="text-fluid-hero font-black uppercase tracking-widest text-white drop-shadow-lg tracking-tight leading-[0.9]">
+                    Piscina <span class="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">d'Estiu</span>
+                </h1>
+                <p class="text-white/80 text-fluid-p font-medium mt-[clamp(0.5rem,1vh,1rem)] max-w-3xl leading-relaxed">
+                    Del 14 de juny al 31 d'agost de 2025. Obert de dilluns a diumenge d'11:00 a 20:30 h.
+                </p>
+            </div>
+            
+            <a href="/index.html" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 px-[clamp(1.5rem,3vw,2.5rem)] py-[clamp(0.75rem,1.5vw,1.25rem)] rounded-full text-white transition-all font-bold shadow-lg w-full md:w-auto flex-shrink-0 whitespace-nowrap text-fluid-btn z-10">
+                <i class="fas fa-arrow-left"></i> Tornar a l'inici
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-[clamp(1rem,2vw,2.5rem)] w-full items-stretch flex-grow mb-[clamp(1.5rem,3vw,3rem)]">
+            
+            <div class="bento-block lg:col-span-2 bg-white/10 backdrop-blur-xl border border-white/20 p-fluid-p rounded-[clamp(1.5rem,3vw,3rem)] shadow-xl relative overflow-hidden group">
+                <h2 class="text-fluid-h3 font-black text-cyan-400 mb-6 flex items-center gap-3 drop-shadow-md relative z-10">
+                    <i class="fas fa-id-card"></i> Abonaments Piscina Estiu
+                </h2>
+                <p class="text-fluid-p text-white/80 font-medium mb-6 relative z-10">
+                    Només inclou l'accés a la Piscina d'Estiu o Exterior i als vestidors.
+                </p>
+                <div class="overflow-x-auto relative z-10">
+                    <table class="w-full text-left text-white/90 text-fluid-p border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/20">
+                                <th class="py-4 px-2 font-bold text-cyan-300">Modalitat</th>
+                                <th class="py-4 px-2 font-bold text-cyan-300">Mensual</th>
+                                <th class="py-4 px-2 font-bold text-cyan-300">Temporada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-2">Infantil <span class="text-sm text-white/50 block">(de 4 a 15 anys)</span></td>
+                                <td class="py-4 px-2 font-bold">22,40 €</td>
+                                <td class="py-4 px-2 font-bold">40,94 €</td>
+                            </tr>
+                            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-2">Jove <span class="text-sm text-white/50 block">(de 16 a 21 anys)</span></td>
+                                <td class="py-4 px-2 font-bold">24,98 €</td>
+                                <td class="py-4 px-2 font-bold">46,09 €</td>
+                            </tr>
+                            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-2">Adult <span class="text-sm text-white/50 block">(de 22 a 64 anys)</span></td>
+                                <td class="py-4 px-2 font-bold">32,70 €</td>
+                                <td class="py-4 px-2 font-bold">61,54 €</td>
+                            </tr>
+                            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-2">Sènior <span class="text-sm text-white/50 block">(65 anys o més)</span></td>
+                                <td class="py-4 px-2 font-bold">24,98 €</td>
+                                <td class="py-4 px-2 font-bold">46,09 €</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 relative z-10">
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/10">
+                        <p class="font-bold text-brand mb-1">Familiar 2</p>
+                        <p class="text-xs text-white/60 mb-2">(2 adults parella)</p>
+                        <p class="font-bold">51,24 €/mes</p>
+                        <p class="font-bold text-cyan-400">96,56 €/temp.</p>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/10">
+                        <p class="font-bold text-brand mb-1">Familiar 3</p>
+                        <p class="text-xs text-white/60 mb-2">(2 adults + 1 fill)</p>
+                        <p class="font-bold">57,42 €/mes</p>
+                        <p class="font-bold text-cyan-400">108,92 €/temp.</p>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/10">
+                        <p class="font-bold text-brand mb-1">Familiar 4</p>
+                        <p class="text-xs text-white/60 mb-2">(2 adults + 2 fills)</p>
+                        <p class="font-bold">65,66 €/mes</p>
+                        <p class="font-bold text-cyan-400">124,89 €/temp.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-[clamp(1rem,2vw,2.5rem)]">
+                <div class="bento-block bg-white/10 backdrop-blur-xl border border-white/20 p-fluid-p rounded-[clamp(1.5rem,3vw,3rem)] shadow-xl relative overflow-hidden group">
+                    <h2 class="text-fluid-h3 font-black text-brand mb-4 drop-shadow-md relative z-10">
+                        <i class="fas fa-ticket-alt"></i> Entrades Puntuals
+                    </h2>
+                    <p class="text-sm text-white/70 mb-6 relative z-10">Adquireix-les a través de l'Oficina Virtual.</p>
+                    
+                    <div class="space-y-4 text-fluid-p relative z-10">
+                        <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                            <span>Infantil <span class="text-xs text-white/50">(4-15 a.)</span></span>
+                            <span class="font-bold text-cyan-400">4,08 €</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                            <span>Jove <span class="text-xs text-white/50">(16-21 a.)</span></span>
+                            <span class="font-bold text-cyan-400">4,90 €</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                            <span>Adult <span class="text-xs text-white/50">(22-64 a.)</span></span>
+                            <span class="font-bold text-cyan-400">6,53 €</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Sènior <span class="text-xs text-white/50">(65+ a.)</span></span>
+                            <span class="font-bold text-cyan-400">4,90 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-block bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-xl border border-cyan-400/50 p-fluid-p rounded-[clamp(1.5rem,3vw,3rem)] shadow-xl relative overflow-hidden group">
+                    <h2 class="text-fluid-h3 font-black text-white mb-4 drop-shadow-md relative z-10">
+                        <i class="fas fa-info-circle text-cyan-400"></i> Informació Important
+                    </h2>
+                    <ul class="space-y-4 text-fluid-p text-white/90 relative z-10">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-id-card text-brand mt-1"></i>
+                            <span>Cal presentar el <strong class="text-white">DNI original</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-ring text-brand mt-1"></i>
+                            <span>Compra del braçalet d'accés obligatòria: <strong class="text-white">4,01€</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-users text-brand mt-1"></i>
+                            <span>Aforament màxim exterior: <strong class="text-white">280 persones</strong> (51 al vas).</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bento-block lg:col-span-3 bg-black/40 backdrop-blur-xl border border-white/20 p-[clamp(2rem,4vw,4rem)] rounded-[clamp(1.5rem,3vw,3rem)] shadow-2xl relative overflow-hidden group">
+                <h2 class="text-fluid-h3 font-black text-white mb-6 drop-shadow-md relative z-10">
+                    <i class="fas fa-book-open text-brand"></i> Normativa Destacada
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-fluid-p text-white/80 relative z-10">
+                    <ul class="space-y-3 list-disc pl-5">
+                        <li>Menors de 14 anys han d'anar sempre acompanyats d'un adult (màxim 5 infants per adult).</li>
+                        <li>És obligatori l'ús de banyador i xancletes. No es permet roba de carrer a la zona de bany.</li>
+                        <li>És obligatori dutxar-se abans d'entrar a l'aigua (sense sabó).</li>
+                        <li>Està prohibit l'ús d'ulleres de vidre i l'entrada de recipients de vidre.</li>
+                    </ul>
+                    <ul class="space-y-3 list-disc pl-5">
+                        <li>No es permet menjar ni beure a la gespa, només a la zona de pícnic habilitada.</li>
+                        <li>No es poden reservar hamaques per a persones no presents ni moure-les del solàrium.</li>
+                        <li>Prohibit fumar o vapejar a tot el recinte de la piscina exterior.</li>
+                        <li>No es permeten pilotes o matalassos que molestin a la resta d'usuaris.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="mt-auto border-t border-white/20 pt-12 pb-8 text-sm relative z-10 w-full bg-black/60 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-8">
+            <div class="flex flex-col gap-3">
+                <h4 class="text-brand font-black uppercase tracking-widest text-base mb-2 drop-shadow-sm">Situació i Contacte</h4>
+                <p class="text-white/90 font-medium text-base">CEM EL TURÓ</p>
+                <p class="text-white/70">c/ Joaquim Blume, nº2<br>08120, La Llagosta</p>
+                <div class="mt-2">
+                    <a href="tel:935451550" class="text-white hover:text-brand font-bold block mb-1 transition-colors">📞 93 545 15 50</a>
+                    <a href="mailto:info@cemelturo.com" class="text-white/80 hover:text-brand font-medium transition-colors">✉️ info@cemelturo.com</a>
+                </div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <h4 class="text-white font-black uppercase tracking-widest text-base mb-2 drop-shadow-sm">Horari 2026</h4>
+                <p class="text-white/80"><span class="font-bold text-white">Dl - Dv:</span> de 7 a 22 h.</p>
+                <p class="text-white/80"><span class="font-bold text-white">Ds:</span> de 9 a 14 h. i de 16 a 20 h.*</p>
+                <p class="text-white/80"><span class="font-bold text-white">Dg:</span> de 9 a 14 h.</p>
+                <p class="text-[10px] text-white/50 leading-tight mt-1 border-t border-white/10 pt-2">*Dissabtes de 16 a 20h només Sala Fitness, AADD i Cycling Virtuals. Dissabtes i Diumenges Zona d'aigües de 09 a 13h.</p>
+            </div>
+            <div class="flex flex-col gap-3">
+                <h4 class="text-white font-black uppercase tracking-widest text-base mb-2 drop-shadow-sm">Horaris d'Estiu</h4>
+                <p class="text-white/80"><span class="font-bold text-white">Piscina Estiu:</span><br>Dl a Dg d'11 a 20.30 h.*</p>
+                <p class="text-[10px] text-white/50 leading-tight border-b border-white/10 pb-2">*Del 14 de juny al 31 d'agost.</p>
+                <p class="text-white/80 mt-1"><span class="font-bold text-white">Horari Agost:</span><br>Dl - Dv: 8 a 22h | Ds: 9 a 20.30h | Dg: 10 a 14h.</p>
+            </div>
+            <div class="flex flex-col gap-2">
+                <h4 class="text-white font-black uppercase tracking-widest text-base mb-3 drop-shadow-sm">Informació</h4>
+                <a href="/html/avisosLegales.html" class="text-white/70 hover:text-white transition">Avís Legal</a>
+                <a href="/html/privacidadWeb.html" class="text-white/70 hover:text-white transition">Política de Privacitat Web</a>
+                <a href="/html/cookies.html" class="text-white/70 hover:text-white transition">Política de Cookies</a>
+                <a href="/html/devolucion.html" class="text-white/70 hover:text-white transition">Política de Devolució - Cancel·lació</a>
+                <a href="/html/actividadesNinosInfantes.html" class="text-white/70 hover:text-white transition">Protocol Protecció Infants</a>
+                <a href="/html/bustia.html" class="text-white/70 hover:text-white transition">Bústia Ètica</a>
+            </div> 
+        </div>
+        <div class="flex flex-col md:flex-row justify-between items-center border-t border-white/10 pt-6 px-6 max-w-7xl mx-auto text-xs text-white/40">
+            <p>© GMSP, S.L. - Complex Esportiu Municipal El Turó</p>
+            <div class="flex gap-4 mt-4 md:mt-0 text-lg">
+                <a href="/html/redes.html" class="hover:text-brand transition"><i class="fab fa-facebook"></i></a>
+                <a href="/html/redes.html" class="hover:text-brand transition"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="chatbot-button" id="chatbotButton">
+        <i class="fas fa-comment"></i>
+    </div>
+
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <h3><i class="fas fa-robot" style="margin-right: 15px;"></i> Assistent El Turó</h3>
+            <button id="closeChatbot"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chatbot-messages no-scrollbar" id="chatbotMessages">
+            <div class="message bot-message">
+                👋 Hola! Sóc l'assistent virtual del CEM El Turó. Tens dubtes sobre les tarifes de la piscina o la normativa? Pregunta'm!
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span><span></span><span></span>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Escriu el teu missatge..." onkeypress="handleChatKeyPress(event)">
+            <button class="chatbot-send" id="chatbotSend" onclick="sendChatMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const chatbotButton = document.getElementById('chatbotButton');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const closeChatbot = document.getElementById('closeChatbot');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        chatbotButton.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('active');
+            chatbotButton.classList.toggle('active');
+            if (chatbotWindow.classList.contains('active')) {
+                chatbotInput.focus();
+            }
+        });
+
+        closeChatbot.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+            chatbotButton.classList.remove('active');
+        });
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') { sendChatMessage(); }
+        }
+
+        function addChatMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatbotMessages.appendChild(messageDiv);
+            
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'flex';
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function hideTyping() { typingIndicator.style.display = 'none'; }
+
+        async function sendChatMessage() {
+            const message = chatbotInput.value.trim();
+            if (!message) return;
+
+            chatbotInput.disabled = true; 
+            chatbotSend.disabled = true;
+            addChatMessage(message, true);
+            chatbotInput.value = '';
+            showTyping();
+
+            try {
+                const response = await fetch('http://localhost:5000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) { 
+                    addChatMessage(data.response); 
+                } else { 
+                    addChatMessage('Error: No s\'ha pogut obtenir resposta.'); 
+                }
+            } catch (error) {
+                addChatMessage('Error de connexió al servidor.');
+            } finally {
+                chatbotInput.disabled = false; 
+                chatbotSend.disabled = false;
+                hideTyping(); 
+                chatbotInput.focus();
+            }
+        }
+    </script>
+</body>
+</html>
